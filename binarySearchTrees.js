@@ -270,3 +270,123 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 };
 
 export { Node, Tree, prettyPrint };
+
+
+
+// Import or include your Tree class and prettyPrint function here
+// (Assuming they're in the same file for this example)
+
+// Function to generate random array
+function generateRandomArray(length, max) {
+  return Array.from({ length }, () => Math.floor(Math.random() * max));
+}
+
+// Main driver function
+function demonstrateBST() {
+  console.log("=== BINARY SEARCH TREE DEMONSTRATION ===\n");
+  
+  // 1. Create array of random numbers < 100
+  const randomArray = generateRandomArray(15, 100);
+  console.log("1. Generated random array:", randomArray);
+  
+  // 2. Create BST from random array
+  const bst = new Tree(randomArray);
+  console.log("2. Created BST from array");
+  prettyPrint(bst.root);
+  
+  // 3. Confirm tree is balanced
+  console.log("3. Is tree balanced?", bst.isBalanced());
+  
+  // 4. Print elements in different orders
+  console.log("\n4. Tree Traversals:");
+  
+  console.log("Level Order:");
+  const levelOrder = [];
+  bst.levelOrderForEach(node => levelOrder.push(node.data));
+  console.log(levelOrder);
+  
+  console.log("Pre Order:");
+  const preOrder = [];
+  bst.preOrderForEach(node => preOrder.push(node.data));
+  console.log(preOrder);
+  
+  console.log("Post Order:");
+  const postOrder = [];
+  bst.postOrderForEach(node => postOrder.push(node.data));
+  console.log(postOrder);
+  
+  console.log("In Order (Sorted):");
+  const inOrder = [];
+  bst.inOrderForEach(node => inOrder.push(node.data));
+  console.log(inOrder);
+  
+  // 5. Unbalance the tree by adding numbers > 100
+  console.log("\n5. Unbalancing the tree...");
+  const largeNumbers = [150, 200, 250, 300, 350, 400];
+  largeNumbers.forEach(num => {
+    bst.insert(num);
+    console.log(`Inserted ${num}`);
+  });
+  
+  console.log("Tree after inserting large numbers:");
+  prettyPrint(bst.root);
+  
+  // 6. Confirm tree is unbalanced
+  console.log("6. Is tree balanced after large inserts?", bst.isBalanced());
+  
+  // 7. Balance the tree
+  console.log("\n7. Rebalancing the tree...");
+  bst.rebalance();
+  console.log("Tree after rebalancing:");
+  prettyPrint(bst.root);
+  
+  // 8. Confirm tree is balanced again
+  console.log("8. Is tree balanced after rebalance?", bst.isBalanced());
+  
+  // 9. Print elements in different orders again
+  console.log("\n9. Tree Traversals after rebalance:");
+  
+  console.log("Level Order:");
+  const levelOrder2 = [];
+  bst.levelOrderForEach(node => levelOrder2.push(node.data));
+  console.log(levelOrder2);
+  
+  console.log("Pre Order:");
+  const preOrder2 = [];
+  bst.preOrderForEach(node => preOrder2.push(node.data));
+  console.log(preOrder2);
+  
+  console.log("Post Order:");
+  const postOrder2 = [];
+  bst.postOrderForEach(node => postOrder2.push(node.data));
+  console.log(postOrder2);
+  
+  console.log("In Order (Sorted):");
+  const inOrder2 = [];
+  bst.inOrderForEach(node => inOrder2.push(node.data));
+  console.log(inOrder2);
+  
+  // Bonus: Demonstrate other methods
+  console.log("\n=== BONUS: ADDITIONAL OPERATIONS ===");
+  
+  // Find operation
+  const searchValue = randomArray[Math.floor(randomArray.length / 2)];
+  const foundNode = bst.find(searchValue);
+  console.log(`\nFind ${searchValue}:`, foundNode ? `Found (${foundNode.data})` : "Not found");
+  
+  // Height and depth
+  console.log(`Height of root: ${bst.height(bst.root.data)}`);
+  console.log(`Depth of root: ${bst.depth(bst.root.data)}`);
+  
+  // Delete operation
+  const deleteValue = randomArray[0];
+  console.log(`\nDeleting ${deleteValue}...`);
+  bst.deleteItem(deleteValue);
+  console.log(`In-order after deleting ${deleteValue}:`);
+  const afterDelete = [];
+  bst.inOrderForEach(node => afterDelete.push(node.data));
+  console.log(afterDelete);
+}
+
+// Run the demonstration
+demonstrateBST();

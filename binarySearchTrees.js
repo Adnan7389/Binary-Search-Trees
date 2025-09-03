@@ -209,6 +209,51 @@ class Tree {
     callback(node);                                // Root
   }
 
+  height(value) {
+    const node = this.find(value);
+    if (node === null) return null;
+    return this.#calculateHeight(node);
+  }
+
+  #calculateHeight(node) {
+    if (node === null) return -1;
+    const leftHeight = this.#calculateHeight(node.left);
+    const rightHeight = this.#calculateHeight(node.right);
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+
+  depth(value) {
+    return this.#calculateDepth(this.root, value, 0);
+  }
+
+  #calculateDepth(node, value, currentDepth) {
+    if (node === null) return null;
+    if (value === node.data) return currentDepth;
+    if (value < node.data) {
+      return this.#calculateDepth(node.left, value, currentDepth + 1);
+    } else {
+      return this.#calculateDepth(node.right, value, currentDepth + 1);
+    }
+  }
+
+  isBalanced() {
+    return this.#checkBalance(this.root) !== -1;
+  }
+
+  #checkBalance(node) {
+    if (node === null) return 0;
+    const leftHeight = this.#checkBalance(node.left);
+    const rightHeight = this.#checkBalance(node.right);
+    if (leftHeight === -1 || rightHeight === -1) return -1;
+    if (Math.abs(leftHeight - rightHeight) > 1) return -1;
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+
+  rebalance() {
+    const values = [];
+    this.inOrderForEach(node => values.push(node.data));
+    this.root = this.buildTree(values);
+  }
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {

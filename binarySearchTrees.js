@@ -11,7 +11,7 @@ class Tree {
         // Remove duplicates and sort the array
         const uniqueArray = [...new Set(array)].sort((a, b) => a - b);
         // Set root to the return value of buildTree
-        this.root = buildTree(uniqueArray);
+        this.root = this.buildTree(uniqueArray);
     }
 
     buildTree(sortedArray) {
@@ -91,6 +91,124 @@ class Tree {
     }
     return current;
   }
+
+  find(value) {
+    return this.#findRecursive(this.root, value);
+  }
+
+  #findRecursive(node, value) {
+    if (node === null) {
+      return null; // Value not found
+    }
+
+    if (value === node.data) {
+      return node; // Found it!
+    }
+
+    // Recursively search left or right subtree
+    if (value < node.data) {
+      return this.#findRecursive(node.left, value);
+    } else {
+      return this.#findRecursive(node.right, value);
+    }
+  }
+
+  levelOrderForEach(callback) {
+    if (typeof callback !== 'function') {
+      throw new Error('Callback function is required');
+    }
+
+    if (this.root === null) return;
+
+    const queue = [this.root];
+
+    while (queue.length > 0) {
+      const currentNode = queue.shift(); // Get first node from queue
+      callback(currentNode);
+
+      // Add children to the end of the queue
+      if (currentNode.left !== null) {
+        queue.push(currentNode.left);
+      }
+      if (currentNode.right !== null) {
+        queue.push(currentNode.right);
+      }
+    }
+  }
+
+  levelOrderForEachRecursive(callback) {
+    if (typeof callback !== 'function') {
+      throw new Error('Callback function is required');
+    }
+
+    const processLevel = (nodes) => {
+      if (nodes.length === 0) return;
+
+      const nextLevel = [];
+      
+      // Process all nodes at current level
+      for (const node of nodes) {
+        callback(node);
+        
+        // Collect children for next level
+        if (node.left !== null) nextLevel.push(node.left);
+        if (node.right !== null) nextLevel.push(node.right);
+      }
+
+      // Process next level
+      processLevel(nextLevel);
+    };
+
+    if (this.root !== null) {
+      processLevel([this.root]);
+    }
+  }
+
+  inOrderForEach(callback) {
+    if (typeof callback !== 'function') {
+      throw new Error('Callback function is required');
+    }
+    this.#inOrderRecursive(this.root, callback);
+  }
+
+  #inOrderRecursive(node, callback) {
+    if (node === null) return;
+
+    this.#inOrderRecursive(node.left, callback); // Left
+    callback(node);                              // Root
+    this.#inOrderRecursive(node.right, callback); // Right
+  }
+
+  preOrderForEach(callback) {
+    if (typeof callback !== 'function') {
+      throw new Error('Callback function is required');
+    }
+    this.#preOrderRecursive(this.root, callback);
+  }
+
+  #preOrderRecursive(node, callback) {
+    if (node === null) return;
+
+    callback(node);                              // Root
+    this.#preOrderRecursive(node.left, callback); // Left
+    this.#preOrderRecursive(node.right, callback); // Right
+  }
+
+  postOrderForEach(callback) {
+    if (typeof callback !== 'function') {
+      throw new Error('Callback function is required');
+    }
+    this.#postOrderRecursive(this.root, callback);
+  }
+
+  #postOrderRecursive(node, callback) {
+    if (node === null) return;
+
+    this.#postOrderRecursive(node.left, callback); // Left
+    this.#postOrderRecursive(node.right, callback); // Right
+    callback(node);                                // Root
+  }
+
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -105,3 +223,5 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
     prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
   }
 };
+
+export { Node, Tree, prettyPrint };
